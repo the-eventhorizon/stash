@@ -3,7 +3,7 @@ name: Flutter Build
 on:
   push:
     branches:
-      - develop
+      - master
 
 jobs:
   build-windows:
@@ -23,6 +23,12 @@ jobs:
 
       - name: Build for windows
         run: flutter build windows
+
+      - name: Upload windows artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-build
+          path: build/windows
 
   build-linux:
     runs-on: ubuntu-latest
@@ -47,6 +53,12 @@ jobs:
       - name: Build for linux
         run: flutter build linux
 
+      - name: Upload linux artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-build
+          path: build/linux
+
   build-android:
     runs-on: ubuntu-latest
 
@@ -64,3 +76,9 @@ jobs:
 
       - name: Build for android
         run: flutter build apk
+
+      - name: Upload android artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-build
+          path: build/android
