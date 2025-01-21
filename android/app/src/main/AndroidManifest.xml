@@ -4,7 +4,7 @@
     <uses-sdk
             android:minSdkVersion="11"/>
     <application
-            android:label="vana_sky_stash"
+            android:label="VanaSky Stash"
             android:name="${applicationName}"
             android:icon="@mipmap/ic_launcher">
         <activity
