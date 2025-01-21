@@ -56,7 +56,7 @@ jobs:
       - name: Upload linux artifact
         uses: actions/upload-artifact@v3
         with:
-          name: windows-build
+          name: linux-build
           path: build/linux
 
   build-android:
@@ -64,7 +64,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkoit@v3
+        uses: actions/checkout@v3
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -80,5 +80,5 @@ jobs:
       - name: Upload android artifact
         uses: actions/upload-artifact@v3
         with:
-          name: windows-build
+          name: android-build
           path: build/android
