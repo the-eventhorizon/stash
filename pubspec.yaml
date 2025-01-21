@@ -15,8 +15,9 @@ dependencies:
   shared_preferences: ^2.3.5
   sqflite: ^2.4.1
   flutter_secure_storage:
-    git: https://github.com/juliansteenbakker/flutter_secure_storage 
-    ref: master
+    git:
+      url: https://github.com/juliansteenbakker/flutter_secure_storage
+      ref: master
 
   flutter_local_notifications: ^18.0.1
   path_provider: ^2.1.5
