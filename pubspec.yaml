@@ -14,7 +14,7 @@ dependencies:
   dio: ^5.7.0
   shared_preferences: ^2.3.5
   sqflite: ^2.4.1
-  flutter_secure_storage: ^10.0.0-beta4
+  flutter_secure_storage: ^10.0.0-beta.4
 
   flutter_local_notifications: ^18.0.1
   path_provider: ^2.1.5
