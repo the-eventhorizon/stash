@@ -28,7 +28,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: windows-build
-          path: build/windows
+          path: build/windows/runner/Release
 
   build-linux:
     runs-on: ubuntu-latest
@@ -81,4 +81,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: android-build
-          path: build/android
+          path: build/app/outputs/flutter-apk/app-release.apk
