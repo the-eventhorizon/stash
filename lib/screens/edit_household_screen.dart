@@ -137,8 +137,7 @@ class EditHouseholdScreenState extends State<EditHouseholdScreen> {
                           InputDecoration(labelText: trans.household_invite_by_code),
                       validator: (value) {
                         if (value == null ||
-                            value.isEmpty ||
-                            !value.contains('@')) {
+                            value.isEmpty) {
                           return trans.household_invite_invalid_code;
                         }
                         return null;

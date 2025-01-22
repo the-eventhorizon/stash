@@ -1,7 +1,9 @@
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:vana_sky_stash/models/user.dart';
 import 'package:vana_sky_stash/providers/api_provider.dart';
 import 'package:vana_sky_stash/providers/settings_notifier.dart';
 
@@ -41,6 +43,7 @@ class SettingScreen extends ConsumerWidget {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.watch(settingsProvider.notifier);
     final trans = AppLocalizations.of(context)!;
+    final ApiProvider api = ApiProvider();
 
     return Scaffold(
       appBar: AppBar(
@@ -112,6 +115,47 @@ class SettingScreen extends ConsumerWidget {
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
               ),
+            ),
+            FutureBuilder<User>(
+              future: api.getUser(context),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                } else if (snapshot.hasData) {
+                  final user = snapshot.data;
+                  return ListTile(
+                    leading: Icon(Icons.person),
+                    title: Text('${trans.user_code}: ${user!.code}'),
+                    subtitle: Text(trans.user_code_tap_to_copy),
+                    onTap: () {
+                      try {
+                        Clipboard.setData(ClipboardData(text: user.code));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Code copied to clipboard'),
+                          ),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Error: $e'),
+                          ),
+                        );
+                      }
+                    },
+                  );
+                } else {
+                  return SizedBox.shrink();
+                }
+              },
             ),
             ListTile(
               leading: Icon(Icons.logout),

@@ -72,8 +72,7 @@ class HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(trans.household_delete),
-        content: Text(
-            '${trans.household_delete_confirm} ${household.name}?'),
+        content: Text('${trans.household_delete_confirm} ${household.name}?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -112,8 +111,7 @@ class HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(trans.household_leave),
-        content: Text(
-            '${trans.household_leave_confirm} ${household.name}?'),
+        content: Text('${trans.household_leave_confirm} ${household.name}?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -190,60 +188,70 @@ class HomeScreenState extends State<HomeScreen> {
                       ? Center(
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: Text('${trans.household_empty} ${trans.household_tap_to_create}'),
-                          ),)
-                  :
-                  ListView(
-                    children: [
-                      if (ownedHouseholds.isNotEmpty) ...[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            trans.household_owned,
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                            child: Text(
+                                '${trans.household_empty} ${trans.household_tap_to_create}'),
                           ),
-                        ),
-                        ...ownedHouseholds.map(
-                          (household) => ListTile(
-                            title: Text(household.name),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  onPressed: () => editHousehold(household),
-                                  icon: Icon(Icons.edit),
+                        )
+                      : ListView(
+                          children: [
+                            if (ownedHouseholds.isNotEmpty) ...[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  trans.household_owned,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                IconButton(
-                                  onPressed: () => deleteHousehold(household),
-                                  icon: Icon(Icons.delete),
+                              ),
+                              ...ownedHouseholds.map(
+                                (household) => ListTile(
+                                  title: Text(household.name),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        onPressed: () =>
+                                            editHousehold(household),
+                                        icon: Icon(Icons.edit),
+                                      ),
+                                      IconButton(
+                                        onPressed: () =>
+                                            deleteHousehold(household),
+                                        icon: Icon(Icons.delete),
+                                      ),
+                                    ],
+                                  ),
+                                  onTap: () =>
+                                      navigateToHouseholdDetails(household),
                                 ),
-                              ],
-                            ),
-                            onTap: () => navigateToHouseholdDetails(household),
-                          ),
+                              ),
+                            ],
+                            if (joinedHouseholds.isNotEmpty) ...[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  trans.household_joined,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              ...joinedHouseholds.map(
+                                (household) => ListTile(
+                                  title: Text(household.name),
+                                  trailing: IconButton(
+                                    onPressed: () => leaveHousehold(household),
+                                    icon: Icon(Icons.exit_to_app),
+                                  ),
+                                  onTap: () =>
+                                      navigateToHouseholdDetails(household),
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
-                      ],
-                      if (joinedHouseholds.isNotEmpty) ...[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Joined Households',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold)),
-                        ),
-                        ...joinedHouseholds.map(
-                          (household) => ListTile(
-                            title: Text(household.name),
-                            trailing: IconButton(
-                              onPressed: () => leaveHousehold(household),
-                              icon: Icon(Icons.exit_to_app),
-                            ),
-                            onTap: () => navigateToHouseholdDetails(household),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
                 ),
       floatingActionButton: FloatingActionButton(
         onPressed: createHousehold,

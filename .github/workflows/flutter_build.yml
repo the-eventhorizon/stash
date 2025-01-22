@@ -59,6 +59,18 @@ jobs:
           name: linux-build
           path: build/linux
 
+      - name: Install flutter_distributor
+        run: flutter pub global activate flutter_distributor
+
+      - name: Distribute linux deb
+        run: flutter pub global run flutter_distributor release --name=dev --jobs=release-dev-linux-deb
+
+      - name: Upload deb artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-deb
+          path: dist
+
   build-android:
     runs-on: ubuntu-latest
 
@@ -69,13 +81,19 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'master' 
+          channel: 'master'
 
       - name: Get flutter deps
-        run: flutter pub get 
+        run: flutter pub get
 
       - name: Build for android
         run: flutter build apk
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: build
 
       - name: Upload android artifact
         uses: actions/upload-artifact@v3

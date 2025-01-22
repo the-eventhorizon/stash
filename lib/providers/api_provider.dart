@@ -1,16 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:vana_sky_stash/models/household.dart';
 import 'package:vana_sky_stash/models/invitation.dart';
 import 'package:vana_sky_stash/models/item.dart';
 import 'package:vana_sky_stash/models/request.dart';
 import 'package:vana_sky_stash/models/shopping_list.dart';
+import 'package:vana_sky_stash/models/user.dart';
 import 'package:vana_sky_stash/providers/auth_provider.dart';
 
 class ApiProvider {
   final Dio dio = Dio();
   String baseUrl = 'https://list.vanasky.com/api';
+  final storage = FlutterSecureStorage();
 
   ApiProvider() {
     dio.interceptors.add(
@@ -21,6 +24,7 @@ class ApiProvider {
             options.headers['Authorization'] = 'Bearer $token';
           }
           options.headers['Content-Type'] = 'application/json';
+          options.headers['Accept'] = 'application/json';
           return handler.next(options);
         },
         onError: (DioException e, handler) {
@@ -64,6 +68,34 @@ class ApiProvider {
 
   // ----------------- Authentication -----------------
 
+  Future<User> getUser(BuildContext context) async {
+    final id = await AuthProvider().getCurrentUserId();
+    final name = await AuthProvider().getCurrentUserName();
+    final code = await AuthProvider().getCurrentUserCode();
+    if (id == null || name == null || code == null) {
+      try {
+        final response = await dio.get('$baseUrl/user');
+        if (response.statusCode == 200) {
+          final userData = response.data['user'];
+          await AuthProvider().storeUserDetails(null, userData['id'].toString(),
+              userData['name'], userData['code']);
+          return User(
+            id: userData['id'],
+            name: userData['name'],
+            code: userData['code'],
+          );
+        } else {
+          if (!context.mounted) return User(id: 0, name: '0', code: '0');
+          throw Exception('else');
+        }
+      } catch (e) {
+        if (!context.mounted) return User(id: 0, name: '0', code: '0');
+        throw Exception('catch');
+      }
+    }
+    return User(id: int.parse(id), name: name, code: code);
+  }
+
   Future<void> register(BuildContext context, String name, String password,
       String confirmedPassword) async {
     try {
@@ -77,7 +109,7 @@ class ApiProvider {
     } catch (e) {
       if (!context.mounted) return;
       throw Exception('${AppLocalizations.of(context)!.error_register} $e');
-   }
+    }
   }
 
   Future<void> login(BuildContext context, String name, String password) async {
@@ -88,8 +120,8 @@ class ApiProvider {
       });
       final token = response.data['token'];
       final user = response.data['user'];
-      await AuthProvider()
-          .storeUserDetails(token, user['id'].toString(), user['name']);
+      await AuthProvider().storeUserDetails(
+          token, user['id'].toString(), user['name'], user['code']);
     } catch (e) {
       if (!context.mounted) return;
       throw Exception(AppLocalizations.of(context)!.error_login);
@@ -148,10 +180,10 @@ class ApiProvider {
   }
 
   Future<void> inviteUserToHousehold(
-      BuildContext context, int householdId, String userEmail) async {
+      BuildContext context, int householdId, String code) async {
     try {
-      await dio.post('$baseUrl/households/$householdId/invite', data: {
-        'email': userEmail,
+      await dio.post('$baseUrl/households/$householdId/invite-user', data: {
+        'user_code': code,
       });
     } catch (e) {
       if (!context.mounted) return;
@@ -358,16 +390,16 @@ class ApiProvider {
     }
   }
 
-  Future<void> respondToInvitation(BuildContext context, int invitationId, String status) async {
+  Future<void> respondToInvitation(
+      BuildContext context, int invitationId, String status) async {
     try {
-      await dio.post('$baseUrl/user/invitations/$invitationId',
-        data: {
-          'status': status,
-        }
-      );
+      await dio.patch('$baseUrl/user/invitations/$invitationId', data: {
+        'status': status,
+      });
     } catch (e) {
       if (!context.mounted) return;
-      throw Exception(AppLocalizations.of(context)!.error_respond_to_invitation);
+      throw Exception(
+          AppLocalizations.of(context)!.error_respond_to_invitation);
     }
   }
 
@@ -385,13 +417,12 @@ class ApiProvider {
     }
   }
 
-  Future<void> respondToRequest(BuildContext context, int requestId, String status) async {
+  Future<void> respondToRequest(
+      BuildContext context, int requestId, String status) async {
     try {
-      await dio.post('$baseUrl/user/requests/$requestId',
-        data: {
-          'status': status,
-        }
-      );
+      await dio.post('$baseUrl/user/requests/$requestId', data: {
+        'status': status,
+      });
     } catch (e) {
       if (!context.mounted) return;
       throw Exception(AppLocalizations.of(context)!.error_respond_to_request);

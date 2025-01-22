@@ -1,0 +1,24 @@
+display_name: Vana Sky Stash
+package_name: stash
+
+maintainer:
+  name: Vana Sky
+  email: info@vanasky.com
+
+priority: optional
+
+section: x11
+
+installed_size: 1024
+
+dependencies:
+  - libsecret-1-0
+  - libjsoncpp-dev
+
+essential: false
+
+icon: linux/assets/app_icon.png
+
+generic_name: Shopping List App
+
+startup_notify: true

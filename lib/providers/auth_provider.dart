@@ -15,11 +15,18 @@ class AuthProvider {
     return await storage.read(key: 'user_name');
   }
 
+  Future<String?> getCurrentUserCode() async {
+    return await storage.read(key: 'user_code');
+  }
+
   Future<void> storeUserDetails(
-      String token, String userId, String userName) async {
-    await storage.write(key: 'auth_token', value: token);
+      String? token, String userId, String userName, String userCode) async {
+    if (token != null) {
+      await storage.write(key: 'auth_token', value: token);
+    }
     await storage.write(key: 'user_id', value: userId);
     await storage.write(key: 'user_name', value: userName);
+    await storage.write(key: 'user_code', value: userCode);
   }
 
   Future<void> register() async {

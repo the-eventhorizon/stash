@@ -50,6 +50,7 @@
   "error_get_requests": "Anfragen konnten nicht abgerufen werden.",
   "error_respond_to_request": "Anfrage konnte nicht beantwortet werden.",
   "error_respond_to_invitation": "Einladung konnte nicht beantwortet werden.",
+  "error_get_user": "Benutzer konnte nicht geladen werden.",
   "household": "Haushalt",
   "households": "Haushalte",
   "household_empty": "Keine Haushalte gefunden.",
@@ -119,5 +120,10 @@
   "user_request_accept": "Anfrage annehmen",
   "user_request_decline": "Anfrage ablehnen",
   "user_request_responded": "Anfrage erfolgreich beantwortet.",
-  "user_delete_account": "Konto löschen"
+  "user_delete_account": "Konto löschen",
+  "user_code": "Benutzercode",
+  "user_code_tap_to_copy": "Zum Kopieren tippen.",
+  "user_accepted_invitations": "Akzeptierte Einladungen",
+  "user_declined_invitations": "Abgelehnte Einladungen",
+  "user_invitations_empty": "Keine ausstehenden Einladungen."
 }

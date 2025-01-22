@@ -13,7 +13,9 @@ class PendingInvitationsScreen extends StatefulWidget {
 
 class PendingInvitationsScreenState extends State<PendingInvitationsScreen> {
   final ApiProvider apiProvider = ApiProvider();
-  List<Invitation> invitations = [];
+  List<Invitation> pendingInvitations = [];
+  List<Invitation> acceptedInvitations = [];
+  List<Invitation> declinedInvitations = [];
   bool loading = false;
   String? errorMessage;
   Set<int> processingInvitations = {};
@@ -31,8 +33,16 @@ class PendingInvitationsScreenState extends State<PendingInvitationsScreen> {
     });
     try {
       final results = await apiProvider.getInvitations(context);
+      final pending =
+          results.where((element) => element.status == 'pending').toList();
+      final accepted =
+          results.where((element) => element.status == 'accepted').toList();
+      final declined =
+          results.where((element) => element.status == 'declined').toList();
       setState(() {
-        invitations = results;
+        pendingInvitations = pending;
+        acceptedInvitations = accepted;
+        declinedInvitations = declined;
         loading = false;
       });
     } catch (e) {
@@ -62,9 +72,15 @@ class PendingInvitationsScreenState extends State<PendingInvitationsScreen> {
       setState(() {
         errorMessage = e.toString();
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage!),
+        ),
+      );
     } finally {
       setState(() {
         processingInvitations.remove(id);
+        loadInvitations();
       });
     }
   }
@@ -85,7 +101,7 @@ class PendingInvitationsScreenState extends State<PendingInvitationsScreen> {
             : Icon(Icons.check),
         onPressed: processingInvitations.contains(invitation.id)
             ? null
-            : () => respondToInvitation(invitation.id, 'accept'),
+            : () => respondToInvitation(invitation.id, 'accepted'),
         tooltip: trans.user_invitation_accept,
       ),
       IconButton(
@@ -101,7 +117,7 @@ class PendingInvitationsScreenState extends State<PendingInvitationsScreen> {
             : Icon(Icons.close),
         onPressed: processingInvitations.contains(invitation.id)
             ? null
-            : () => respondToInvitation(invitation.id, 'decline'),
+            : () => respondToInvitation(invitation.id, 'declined'),
         tooltip: trans.user_invitation_decline,
       )
     ];
@@ -120,32 +136,79 @@ class PendingInvitationsScreenState extends State<PendingInvitationsScreen> {
                 color: Theme.of(context).colorScheme.primary,
               ),
             )
-          : errorMessage != null
-              ? Center(
-                  child: Text(errorMessage!),
-                )
-              : RefreshIndicator(
-                  onRefresh: loadInvitations,
-                  child: invitations.isEmpty
-                      ? Center(
-                          child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Text(trans.user_pending_invitations_empty),
-                        ))
-                      : ListView.builder(
-                          itemCount: invitations.length,
-                          itemBuilder: (context, index) {
-                            final invitation = invitations[index];
-                            return ListTile(
+          : RefreshIndicator(
+              onRefresh: loadInvitations,
+              child: pendingInvitations.isEmpty &&
+                      acceptedInvitations.isEmpty &&
+                      declinedInvitations.isEmpty
+                  ? Center(
+                      child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(trans.user_invitations_empty),
+                    ))
+                  : ListView(
+                      children: [
+                        if (pendingInvitations.isNotEmpty) ...[
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              trans.user_pending_invitations,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          ...pendingInvitations.map(
+                            (invitation) => ListTile(
                               title: Text(invitation.household.name),
                               subtitle: Text(invitation.inviterUser.name),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: getIconButtons(invitation),
                               ),
-                            );
-                          }),
-                ),
+                            ),
+                          ),
+                        ],
+                        if (acceptedInvitations.isNotEmpty) ...[
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              trans.user_accepted_invitations,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          ...acceptedInvitations.map(
+                            (invitation) => ListTile(
+                              title: Text(invitation.household.name),
+                              subtitle: Text(invitation.inviterUser.name),
+                            ),
+                          ),
+                        ],
+                        if (declinedInvitations.isNotEmpty) ...[
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              trans.user_declined_invitations,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          ...declinedInvitations.map(
+                            (invitation) => ListTile(
+                              title: Text(invitation.household.name),
+                              subtitle: Text(invitation.inviterUser.name),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+            ),
     );
   }
 }
