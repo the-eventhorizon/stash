@@ -63,7 +63,7 @@ jobs:
         run: flutter pub global activate flutter_distributor
 
       - name: Distribute linux deb
-        run: flutter pub global run flutter_distributor release --name=dev --jobs=release-dev-linux-deb
+        run: flutter_distributor release --name=dev --jobs=release-dev-linux-deb
 
       - name: Upload deb artifact
         uses: actions/upload-artifact@v3
@@ -88,12 +88,6 @@ jobs:
 
       - name: Build for android
         run: flutter build apk
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: build
-          path: build
 
       - name: Upload android artifact
         uses: actions/upload-artifact@v3
