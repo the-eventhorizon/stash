@@ -165,7 +165,7 @@ class EditHouseholdScreenState extends State<EditHouseholdScreen> {
                       ),
                     ),
                   SizedBox(height: 24.0),
-                  Text('Members', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                  Text(trans.household_members, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                   widget.household.members == null || widget.household.members!.isEmpty
                   ? Text('${trans.household_no_members} ${trans.household_invite_tap_to_create}')
                       : ListView.builder(

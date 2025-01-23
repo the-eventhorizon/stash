@@ -66,7 +66,7 @@
   "household_members": "Household Members",
   "household_no_members": "No members in this household.",
   "household_owner": "Owner",
-  "household_invite_tap_to_create": "Tap the '+' to create a new household.",
+  "household_invite_tap_to_create": "You can invite users by entering their code above.",
   "household_invite_success": "User invited successfully.",
   "household_invite_invalid_code": "Please enter a valid user code.",
   "household_edit": "Edit Household",
