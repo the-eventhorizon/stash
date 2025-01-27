@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:vana_sky_stash/providers/api_provider.dart';
+import 'package:vana_sky_stash/screens/login_screen.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -23,7 +24,10 @@ class UserScreenState extends State<UserScreen> {
     try {
       await apiProvider.logout(context);
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+          (route) => false);
     } catch (e) {
       setState(() {
         errorMessage = e.toString();

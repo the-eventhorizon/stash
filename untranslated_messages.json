@@ -1,1 +1,7 @@
-{}
+{
+  "de": [
+    "settings_check_for_updates",
+    "settings_current_version",
+    "settings_latest_version"
+  ]
+}

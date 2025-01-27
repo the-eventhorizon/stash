@@ -1,8 +1,12 @@
 import 'package:country_flags/country_flags.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:vana_sky_stash/screens/login_screen.dart';
 import 'package:vana_sky_stash/models/user.dart';
 import 'package:vana_sky_stash/providers/api_provider.dart';
 import 'package:vana_sky_stash/providers/settings_notifier.dart';
@@ -15,7 +19,10 @@ class SettingScreen extends ConsumerWidget {
     try {
       await api.logout(context);
       if (!context.mounted) return;
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+          (route) => false);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -35,6 +42,29 @@ class SettingScreen extends ConsumerWidget {
         return trans.language_de;
       default:
         return languageCode;
+    }
+  }
+
+  Future<Map<String, dynamic>> checkForUpdates(BuildContext context) async {
+    final String repo =
+        'https://api.github.com/repos/the-eventhorizon/stash/releases/latest';
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    final currentVersion = 'v${packageInfo.version}-${packageInfo.buildNumber}';
+    final Dio dio = Dio();
+    try {
+      final response = await dio.get(repo);
+      final latestVersion = response.data['tag_name'];
+      final url = response.data['html_url'];
+      return {
+        'currentVersion': currentVersion,
+        'latestVersion': latestVersion,
+        'url': url,
+      };
+    } catch (e) {
+      return {
+        'currentVersion': currentVersion,
+        'error': 'Error: $e',
+      };
     }
   }
 
@@ -108,6 +138,50 @@ class SettingScreen extends ConsumerWidget {
                   );
                 },
               ),
+            ),
+            FutureBuilder<Map<String, dynamic>>(
+              future: checkForUpdates(context),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final updateInfo = snapshot.data!;
+                  return ListTile(
+                    title: Text(trans.settings_check_for_updates),
+                    subtitle: Row(
+                      children: [
+                        Text(
+                            '${trans.settings_current_version}: ${updateInfo['currentVersion']}'),
+                        SizedBox(width: 8.0),
+                        Text(
+                          '${trans.settings_latest_version}: ${updateInfo['latestVersion']}',
+                          style: TextStyle(
+                            color: updateInfo['currentVersion'] ==
+                                    updateInfo['latestVersion']
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () => {
+                      if (updateInfo['currentVersion'] ==
+                          updateInfo['latestVersion'])
+                        {checkForUpdates(context)}
+                      else
+                        {
+                          // Open browser to latest release
+                          if (updateInfo.containsKey('url'))
+                            {launchUrl(updateInfo['url'])}
+                        }
+                    },
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                } else {
+                  return SizedBox.shrink();
+                }
+              },
             ),
             Text(
               trans.settings_account,
