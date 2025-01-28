@@ -21,6 +21,7 @@ class ShoppingListDetailsScreenState extends State<ShoppingListDetailsScreen> {
   final ApiProvider apiProvider = ApiProvider();
   final formKey = GlobalKey<FormState>();
   final itemNameController = TextEditingController();
+  final editController = TextEditingController();
   List<Item> listItems = [];
   bool loading = true;
   String? errorMessage;
@@ -34,6 +35,7 @@ class ShoppingListDetailsScreenState extends State<ShoppingListDetailsScreen> {
   @override
   void dispose() {
     itemNameController.dispose();
+    editController.dispose();
     super.dispose();
   }
 
@@ -83,9 +85,36 @@ class ShoppingListDetailsScreenState extends State<ShoppingListDetailsScreen> {
     }
   }
 
+  void updateItem(Item item) async {
+    if (formKey.currentState!.validate()) {
+      setState(() {
+        loading = true;
+        errorMessage = null;
+      });
+
+      try {
+        await apiProvider.updateItem(context, widget.household.id,
+            widget.shoppingList.id, item.id, editController.text.trim());
+        if (!mounted) return;
+        Navigator.pop(context, true);
+        loadItems();
+      } catch (e) {
+        setState(() {
+          errorMessage = e.toString();
+        });
+      } finally {
+        setState(() {
+          loading = false;
+        });
+      }
+    }
+  }
+
   void editItem(Item item) {
+    setState(() {
+      editController.text = item.name;
+    });
     final trans = AppLocalizations.of(context)!;
-    final editController = TextEditingController(text: item.name);
     showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -104,13 +133,15 @@ class ShoppingListDetailsScreenState extends State<ShoppingListDetailsScreen> {
                   children: [
                     TextFormField(
                         controller: editController,
+                        textInputAction: TextInputAction.done,
                         decoration: InputDecoration(labelText: trans.item_name),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return trans.item_field_empty;
                           }
                           return null;
-                        }),
+                        },
+                        onFieldSubmitted: (_) => updateItem(item)),
                     SizedBox(height: 16.0),
                     if (loading)
                       CircularProgressIndicator(
@@ -118,34 +149,7 @@ class ShoppingListDetailsScreenState extends State<ShoppingListDetailsScreen> {
                       )
                     else
                       ElevatedButton(
-                        onPressed: () async {
-                          if (formKey.currentState!.validate()) {
-                            setState(() {
-                              loading = true;
-                              errorMessage = null;
-                            });
-
-                            try {
-                              await apiProvider.updateItem(
-                                  context,
-                                  widget.household.id,
-                                  widget.shoppingList.id,
-                                  item.id,
-                                  editController.text.trim());
-                              if (!context.mounted) return;
-                              Navigator.pop(context, true);
-                              loadItems();
-                            } catch (e) {
-                              setState(() {
-                                errorMessage = e.toString();
-                              });
-                            } finally {
-                              setState(() {
-                                loading = false;
-                              });
-                            }
-                          }
-                        },
+                        onPressed: () => updateItem(item),
                         child: Text(trans.item_update),
                       ),
                   ],
@@ -220,14 +224,17 @@ class ShoppingListDetailsScreenState extends State<ShoppingListDetailsScreen> {
                 child: Column(
                   children: [
                     TextFormField(
-                        controller: itemNameController,
-                        decoration: InputDecoration(labelText: trans.item_name),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return trans.item_field_empty;
-                          }
-                          return null;
-                        }),
+                      controller: itemNameController,
+                      textInputAction: TextInputAction.done,
+                      decoration: InputDecoration(labelText: trans.item_name),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return trans.item_field_empty;
+                        }
+                        return null;
+                      },
+                      onFieldSubmitted: (_) => sendItem(),
+                    ),
                     SizedBox(height: 16.0),
                     if (loading)
                       CircularProgressIndicator(
@@ -295,7 +302,8 @@ class ShoppingListDetailsScreenState extends State<ShoppingListDetailsScreen> {
                       ? Center(
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: Text('${trans.item_empty} ${trans.item_tap_to_create}'),
+                            child: Text(
+                                '${trans.item_empty} ${trans.item_tap_to_create}'),
                           ),
                         )
                       : ListView.builder(
@@ -312,7 +320,9 @@ class ShoppingListDetailsScreenState extends State<ShoppingListDetailsScreen> {
                                 onTap: () => optimisticToggle(item),
                                 child: Container(
                                   color: item.checked
-                                      ? Theme.of(context).colorScheme.surfaceContainerHighest
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .surfaceContainerHighest
                                       : Colors.transparent,
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 8.0),

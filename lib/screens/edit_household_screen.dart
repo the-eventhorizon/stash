@@ -43,8 +43,8 @@ class EditHouseholdScreenState extends State<EditHouseholdScreen> {
       });
 
       try {
-        await apiProvider.updateHousehold(context,
-            widget.household.id, nameController.text.trim());
+        await apiProvider.updateHousehold(
+            context, widget.household.id, nameController.text.trim());
         if (!mounted) return;
         Navigator.pop(context, true); // Return true to indicate success
       } catch (e) {
@@ -69,8 +69,8 @@ class EditHouseholdScreenState extends State<EditHouseholdScreen> {
       });
 
       try {
-        await apiProvider.inviteUserToHousehold(context,
-            widget.household.id, inviteController.text.trim());
+        await apiProvider.inviteUserToHousehold(
+            context, widget.household.id, inviteController.text.trim());
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(trans.household_invite_success)));
@@ -79,8 +79,8 @@ class EditHouseholdScreenState extends State<EditHouseholdScreen> {
         setState(() {
           errorMessage = e.toString();
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(trans.error_invite_user)));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(trans.error_invite_user)));
       } finally {
         setState(() {
           loadingInvite = false;
@@ -107,13 +107,16 @@ class EditHouseholdScreenState extends State<EditHouseholdScreen> {
                 children: [
                   TextFormField(
                     controller: nameController,
-                    decoration: InputDecoration(labelText: trans.household_name),
+                    textInputAction: TextInputAction.done,
+                    decoration:
+                        InputDecoration(labelText: trans.household_name),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return trans.household_empty;
                       }
                       return null;
                     },
+                    onFieldSubmitted: (_) => updateHousehold(),
                   ),
                   SizedBox(height: 24.0),
                   ElevatedButton(
@@ -139,16 +142,19 @@ class EditHouseholdScreenState extends State<EditHouseholdScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextFormField(
-                      controller: inviteController,
-                      decoration:
-                          InputDecoration(labelText: trans.household_invite_by_code),
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty) {
-                          return trans.household_invite_invalid_code;
-                        }
-                        return null;
-                      }),
+                    controller: inviteController,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      labelText: trans.household_invite_by_code,
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return trans.household_invite_invalid_code;
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (_) => inviteUser(),
+                  ),
                   SizedBox(height: 16.0),
                   ElevatedButton(
                     onPressed: inviteUser,
@@ -172,23 +178,27 @@ class EditHouseholdScreenState extends State<EditHouseholdScreen> {
                       ),
                     ),
                   SizedBox(height: 24.0),
-                  Text(trans.household_members, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-                  widget.household.members == null || widget.household.members!.isEmpty
-                  ? Text('${trans.household_no_members} ${trans.household_invite_tap_to_create}')
+                  Text(trans.household_members,
+                      style: TextStyle(
+                          fontSize: 18.0, fontWeight: FontWeight.bold)),
+                  widget.household.members == null ||
+                          widget.household.members!.isEmpty
+                      ? Text(
+                          '${trans.household_no_members} ${trans.household_invite_tap_to_create}')
                       : ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: widget.household.members!.length,
-                    itemBuilder: (context, index) {
-                      final member = widget.household.members![index];
-                      return ListTile(
-                        title: Text(member.name),
-                        subtitle: Text(member.code),
-                        trailing: member.id == widget.household.ownerId
-                            ? Text(trans.household_owner)
-                            : null,
-                      );
-                    },
-                  )
+                          shrinkWrap: true,
+                          itemCount: widget.household.members!.length,
+                          itemBuilder: (context, index) {
+                            final member = widget.household.members![index];
+                            return ListTile(
+                              title: Text(member.name),
+                              subtitle: Text(member.code),
+                              trailing: member.id == widget.household.ownerId
+                                  ? Text(trans.household_owner)
+                                  : null,
+                            );
+                          },
+                        )
                 ],
               ),
             ),

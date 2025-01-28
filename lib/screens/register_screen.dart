@@ -13,6 +13,8 @@ class RegisterScreenState extends State<RegisterScreen> {
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final passwordNode = FocusNode();
+  final confirmPasswordNode = FocusNode();
   final formKey = GlobalKey<FormState>();
   bool loading = false;
   String? errorMessage;
@@ -77,6 +79,7 @@ class RegisterScreenState extends State<RegisterScreen> {
             children: [
               TextFormField(
                 controller: nameController,
+                textInputAction: TextInputAction.next,
                 decoration: InputDecoration(labelText: trans.auth_name),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -84,10 +87,13 @@ class RegisterScreenState extends State<RegisterScreen> {
                   }
                   return null;
                 },
+                onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(passwordNode),
               ),
               SizedBox(height: 16.0),
               TextFormField(
                 controller: passwordController,
+                focusNode: passwordNode,
+                textInputAction: TextInputAction.next,
                 decoration: InputDecoration(labelText: trans.auth_password),
                 obscureText: true,
                 validator: (value) {
@@ -100,10 +106,13 @@ class RegisterScreenState extends State<RegisterScreen> {
                   }
                   return null;
                 },
+                onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(confirmPasswordNode),
               ),
               SizedBox(height: 16.0),
               TextFormField(
                 controller: confirmPasswordController,
+                focusNode: confirmPasswordNode,
+                textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
                     labelText: trans.auth_password_confirmation),
                 obscureText: true,
@@ -116,6 +125,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                   }
                   return null;
                 },
+                onFieldSubmitted: (_) => register(),
               ),
               SizedBox(height: 24.0),
               if (loading)

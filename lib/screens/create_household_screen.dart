@@ -60,6 +60,7 @@ class CreateHouseholdScreenState extends State<CreateHouseholdScreen> {
             children: [
               TextFormField(
                 controller: nameController,
+                textInputAction: TextInputAction.done,
                 decoration: InputDecoration(labelText: trans.household_name),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -67,6 +68,7 @@ class CreateHouseholdScreenState extends State<CreateHouseholdScreen> {
                   }
                   return null;
                 },
+                onFieldSubmitted: (_) => createHousehold(),
               ),
               SizedBox(height: 16.0),
               if (loading)

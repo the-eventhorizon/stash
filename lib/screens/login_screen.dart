@@ -12,6 +12,7 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen> {
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
+  final passwordNode = FocusNode();
   final formKey = GlobalKey<FormState>();
   bool loading = false;
   String? errorMessage;
@@ -73,6 +74,7 @@ class LoginScreenState extends State<LoginScreen> {
             children: [
               TextFormField(
                 controller: nameController,
+                textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   labelText: trans.auth_name,
                 ),
@@ -82,9 +84,12 @@ class LoginScreenState extends State<LoginScreen> {
                   }
                   return null;
                 },
+                onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(passwordNode),
               ),
               TextFormField(
                 controller: passwordController,
+                focusNode: passwordNode,
+                textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
                   labelText: trans.auth_password,
                 ),
@@ -95,6 +100,7 @@ class LoginScreenState extends State<LoginScreen> {
                   }
                   return null;
                 },
+                onFieldSubmitted: (_) => login(),
               ),
               if (errorMessage != null)
                 Padding(

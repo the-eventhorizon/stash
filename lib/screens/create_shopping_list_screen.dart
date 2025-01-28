@@ -71,6 +71,7 @@ class CreateShoppingListScreenState extends State<CreateShoppingListScreen> {
             children: [
               TextFormField(
                 controller: nameController,
+                textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
                     labelText: trans.list_name),
                 validator: (value) {
@@ -79,6 +80,7 @@ class CreateShoppingListScreenState extends State<CreateShoppingListScreen> {
                   }
                   return null;
                 },
+                onFieldSubmitted: (_) => createShoppingList(),
               ),
               SizedBox(height: 16.0),
               if (loading)
