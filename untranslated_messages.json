@@ -1,5 +1,9 @@
 {
   "de": [
+    "ui_welcome",
+    "ui_welcome_message",
+    "ui_welcome_login",
+    "ui_welcome_register",
     "settings_check_for_updates",
     "settings_current_version",
     "settings_latest_version"

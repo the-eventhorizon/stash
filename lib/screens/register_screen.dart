@@ -125,7 +125,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                 onPressed: () async {
                   Navigator.pushReplacementNamed(context, '/login');
                 },
-                child: Text('Already have an account? Log in'),
+                child: Text(trans.ui_welcome_login),
               ),
             ],
           ),

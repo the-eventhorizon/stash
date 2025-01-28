@@ -5,7 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vana_sky_stash/providers/settings_notifier.dart';
 import 'package:vana_sky_stash/routes.dart';
-import 'package:vana_sky_stash/screens/login_screen.dart';
+import 'package:vana_sky_stash/screens/welcome_screen.dart';
 import 'package:vana_sky_stash/screens/home_screen.dart';
 import 'package:vana_sky_stash/themes/dark.dart';
 import 'package:vana_sky_stash/themes/light.dart';
@@ -22,7 +22,7 @@ class MyApp extends ConsumerWidget {
   Future<Widget> determineHomeScreen() async {
     String? authToken = await storage.read(key: 'auth_token');
     if (authToken == null) {
-      return LoginScreen();
+      return WelcomeScreen();
     }
     return HomeScreen();
   }

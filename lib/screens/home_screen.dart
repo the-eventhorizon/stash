@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:vana_sky_stash/models/household.dart';
 import 'package:vana_sky_stash/providers/api_provider.dart';
 import 'package:vana_sky_stash/providers/auth_provider.dart';
+import 'package:vana_sky_stash/screens/welcome_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -158,6 +160,12 @@ class HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(trans.households),
         actions: [
+          if (kDebugMode)
+          IconButton(
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WelcomeScreen())),
+            icon: Icon(Icons.code)
+          ),
+
           IconButton(
             onPressed: () => loadHouseholds(),
             icon: Icon(Icons.refresh),
@@ -253,6 +261,7 @@ class HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                 ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: createHousehold,
         tooltip: 'Create Household',

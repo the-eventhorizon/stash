@@ -112,7 +112,7 @@ class LoginScreenState extends State<LoginScreen> {
                 onPressed: () async {
                   Navigator.pushReplacementNamed(context, '/register');
                 },
-                child: Text('No account? Register here'),
+                child: Text(trans.ui_welcome_register),
               ),
             ],
           ),
