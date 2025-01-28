@@ -111,6 +111,11 @@ class PendingRequestsScreenState extends State<PendingRequestsScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final trans = AppLocalizations.of(context)!;
     return Scaffold(

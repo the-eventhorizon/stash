@@ -19,6 +19,11 @@ class RegisterScreenState extends State<RegisterScreen> {
 
   final ApiProvider apiProvider = ApiProvider();
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void register() async {
     if (formKey.currentState!.validate()) {
      setState(() {
@@ -44,6 +49,16 @@ class RegisterScreenState extends State<RegisterScreen> {
        loading = false;
       }
     }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    passwordNode.dispose();
+    confirmPasswordNode.dispose();
+    super.dispose();
   }
 
   @override

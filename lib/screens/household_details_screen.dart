@@ -105,6 +105,11 @@ class HouseholdDetailsScreenState extends State<HouseholdDetailsScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final trans = AppLocalizations.of(context)!;
     return Scaffold(

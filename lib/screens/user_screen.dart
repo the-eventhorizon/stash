@@ -15,6 +15,11 @@ class UserScreenState extends State<UserScreen> {
   bool loading = false;
   String? errorMessage;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void logout() async {
     setState(() {
       loading = true;
@@ -35,6 +40,11 @@ class UserScreenState extends State<UserScreen> {
     } finally {
       loading = false;
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override

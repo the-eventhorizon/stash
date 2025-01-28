@@ -124,6 +124,11 @@ class PendingInvitationsScreenState extends State<PendingInvitationsScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final trans = AppLocalizations.of(context)!;
     return Scaffold(

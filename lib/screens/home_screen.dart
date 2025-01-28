@@ -26,6 +26,11 @@ class HomeScreenState extends State<HomeScreen> {
     loadHouseholds();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Future<void> loadHouseholds() async {
     if (!mounted) return;
     setState(() {

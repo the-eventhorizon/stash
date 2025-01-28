@@ -18,6 +18,11 @@ class LoginScreenState extends State<LoginScreen> {
 
   final ApiProvider apiProvider = ApiProvider();
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void login() async {
     if (formKey.currentState!.validate()) {
       setState(() {
@@ -42,6 +47,14 @@ class LoginScreenState extends State<LoginScreen> {
         loading = false;
       }
     }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    passwordController.dispose();
+    passwordNode.dispose();
+    super.dispose();
   }
 
   @override

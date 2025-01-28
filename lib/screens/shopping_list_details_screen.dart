@@ -31,6 +31,12 @@ class ShoppingListDetailsScreenState extends State<ShoppingListDetailsScreen> {
     loadItems();
   }
 
+  @override
+  void dispose() {
+    itemNameController.dispose();
+    super.dispose();
+  }
+
   Future<void> loadItems() async {
     setState(() {
       loading = true;

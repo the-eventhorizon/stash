@@ -20,6 +20,11 @@ class CreateShoppingListScreenState extends State<CreateShoppingListScreen> {
   bool loading = false;
   String? errorMessage;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void createShoppingList() async {
     if (formKey.currentState!.validate()) {
       setState(() {
@@ -42,6 +47,12 @@ class CreateShoppingListScreenState extends State<CreateShoppingListScreen> {
         });
       }
     }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
   }
 
   @override

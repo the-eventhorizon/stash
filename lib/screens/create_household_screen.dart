@@ -16,6 +16,11 @@ class CreateHouseholdScreenState extends State<CreateHouseholdScreen> {
   bool loading = false;
   String? errorMessage;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void createHousehold() async {
     if (formKey.currentState!.validate()) {
       setState(() {
@@ -33,6 +38,12 @@ class CreateHouseholdScreenState extends State<CreateHouseholdScreen> {
         loading = false;
       }
     }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
   }
 
   @override

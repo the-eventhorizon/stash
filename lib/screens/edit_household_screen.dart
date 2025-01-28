@@ -28,6 +28,13 @@ class EditHouseholdScreenState extends State<EditHouseholdScreen> {
     nameController.text = widget.household.name;
   }
 
+  @override
+  void dispose() {
+    nameController.dispose();
+    inviteController.dispose();
+    super.dispose();
+  }
+
   void updateHousehold() async {
     if (formKey1.currentState!.validate()) {
       setState(() {
