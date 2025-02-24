@@ -151,13 +151,12 @@ class ApiProvider {
     }
   }
 
-  Future<void> changePassword(BuildContext context, String currentPassword,
-      String newPassword, String confirmedPassword, String? userId) async {
+  Future<void> changePassword(BuildContext context, List<dynamic> passwords, String? userId) async {
     try {
       await dio.post('$baseUrl/user/$userId/change-password', data: {
-        'current_password': currentPassword,
-        'new_password': newPassword,
-        'new_password_confirmation': confirmedPassword,
+        'current_password': passwords[0],
+        'new_password': passwords[1],
+        'new_password_confirmation': passwords[2],
       },
       );
     } catch (e) {

@@ -38,12 +38,26 @@ class SettingScreen extends ConsumerWidget {
     final ApiProvider api = ApiProvider();
 
     final formKey = GlobalKey<FormState>();
-    final currentPasswordController = TextEditingController();
-    final newPasswordController = TextEditingController();
-    final confirmPasswordController = TextEditingController();
     final userId = await AuthProvider().getCurrentUserId();
 
-    bool isPasswordVisible = false;
+    List<Map<String, dynamic>> formFields = [
+      {
+        'label': trans.auth_password_current,
+        'controller': TextEditingController(),
+        'visible': false,
+      },
+      {
+        'label': trans.auth_password_new,
+        'controller': TextEditingController(),
+        'visible': false,
+      },
+      {
+        'label': trans.auth_password_confirmation,
+        'controller': TextEditingController(),
+        'visible': false,
+      }
+    ];
+
     bool loading = false;
     String? errorMessage;
 
@@ -65,100 +79,87 @@ class SettingScreen extends ConsumerWidget {
                 Form(
                   key: formKey,
                   child: Column(
-                    children: [
-                      TextFormField(
-                        controller: currentPasswordController,
-                        decoration: InputDecoration(
-                          labelText: trans.auth_password_current,
-                        ),
-                        obscureText: true,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return trans.auth_password_invalid;
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 10.0),
-                      TextFormField(
-                        controller: newPasswordController,
-                        decoration:
-                            InputDecoration(labelText: trans.auth_password_new),
-                        obscureText: true,
-                        validator: (value) {
-                          if (value == null || value.length < 8) {
-                            return trans.auth_password_too_short;
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 10.0),
-                      TextFormField(
-                        controller: confirmPasswordController,
-                        decoration: InputDecoration(
-                            labelText: trans.auth_password_confirmation),
-                        obscureText: true,
-                        validator: (value) {
-                          if (value == null ||
-                              value != newPasswordController.text) {
-                            return trans.auth_password_no_match;
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 16.0),
-                      if (loading)
-                        CircularProgressIndicator(
-                          color: Theme.of(context).primaryColor,
-                        )
-                      else
-                        ElevatedButton(
-                          onPressed: () async {
-                            if (formKey.currentState!.validate()) {
-                              setState(() {
-                                loading = true;
-                                errorMessage = null;
-                              });
-                            }
-                            try {
-                              await api.changePassword(
-                                  context,
-                                  currentPasswordController.text,
-                                  newPasswordController.text,
-                                  confirmPasswordController.text,
-                                  userId);
-                              if (!context.mounted) return;
-                              Navigator.pop(context, true);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(trans.auth_password_changed),
-                                ),
-                              );
-                            } catch (e) {
-                              setState(() {
-                                errorMessage = e.toString();
-                              });
-                            } finally {
-                              setState(() {
-                                loading = false;
-                              });
-                            }
-                          },
-                          child: Text(trans.auth_password_change),
-                        ),
-                      if (errorMessage != null)
-                        Padding(
-                          padding: EdgeInsets.only(top: 8.0),
-                          child: Text(errorMessage!),
-                        ),
-                    ],
+                    children: formFields
+                        .asMap()
+                        .entries
+                        .map((entry) =>
+                            buildPasswordField(context, entry.key, formFields, setState))
+                        .toList(),
                   ),
-                )
+                ),
+                SizedBox(height: 16.0),
+                if (loading)
+                  CircularProgressIndicator(
+                    color: Theme.of(context).primaryColor,
+                  )
+                else
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (formKey.currentState!.validate()) {
+                        setState(() {
+                          loading = true;
+                          errorMessage = null;
+                        });
+                      }
+                      try {
+                        await api.changePassword(
+                            context,
+                            formFields.map((field) => field['controller'].text).toList(),
+                            userId);
+                        if (!context.mounted) return;
+                        Navigator.pop(context, true);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(trans.auth_password_changed),
+                          ),
+                        );
+                      } catch (e) {
+                        setState(() {
+                          errorMessage = e.toString();
+                        });
+                      } finally {
+                        setState(() {
+                          loading = false;
+                        });
+                      }
+                    },
+                    child: Text(trans.auth_password_change),
+                  ),
+                if (errorMessage != null)
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.0),
+                    child: Text(errorMessage!),
+                  ),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildPasswordField(BuildContext context, int index, List<Map<String, dynamic>> formFields,
+      void Function(VoidCallback) setState) {
+    return Column(
+      children: [
+        TextFormField(
+          controller: formFields[index]['controller'],
+          obscureText: !formFields[index]['visible'],
+          decoration: InputDecoration(
+            labelText: formFields[index]['label'],
+            suffixIcon: IconButton(
+              icon: Icon(formFields[index]['visible']
+              ? Icons.visibility_off
+              : Icons.visibility),
+              onPressed: () => setState(() => formFields[index]['visible'] = !formFields[index]['visible']),
+            )
+          ),
+          validator: (value) => value == null || value.isEmpty
+              ? AppLocalizations.of(context)!.auth_password_invalid
+              : null,
+        ),
+        SizedBox(height: 10.0),
+      ]
     );
   }
 
