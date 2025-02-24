@@ -62,7 +62,7 @@ class SettingScreen extends ConsumerWidget {
     String? errorMessage;
 
     if (!context.mounted) return;
-    final result = await showDialog(
+    await showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => Dialog(
