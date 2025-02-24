@@ -4,6 +4,11 @@
     "ui_welcome_message",
     "ui_welcome_login",
     "ui_welcome_register",
+    "auth_password_change",
+    "auth_password_current",
+    "auth_password_new",
+    "auth_password_changed",
+    "error_change_password",
     "settings_check_for_updates",
     "settings_current_version",
     "settings_latest_version"

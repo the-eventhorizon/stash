@@ -151,6 +151,21 @@ class ApiProvider {
     }
   }
 
+  Future<void> changePassword(BuildContext context, String currentPassword,
+      String newPassword, String confirmedPassword, String? userId) async {
+    try {
+      await dio.post('$baseUrl/user/$userId/change-password', data: {
+        'current_password': currentPassword,
+        'new_password': newPassword,
+        'new_password_confirmation': confirmedPassword,
+      },
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      throw Exception(AppLocalizations.of(context)!.error_change_password);
+    }
+  }
+
   // ----------------- Households -----------------
 
   Future<List<Household>> getHouseholds(BuildContext context) async {
@@ -179,8 +194,8 @@ class ApiProvider {
     }
   }
 
-  Future<void> inviteUserToHousehold(
-      BuildContext context, int householdId, String code) async {
+  Future<void> inviteUserToHousehold(BuildContext context, int householdId,
+      String code) async {
     try {
       await dio.post('$baseUrl/households/$householdId/invite-user', data: {
         'user_code': code,
@@ -200,8 +215,8 @@ class ApiProvider {
     }
   }
 
-  Future<void> removeUserFromHousehold(
-      BuildContext context, int householdId, int userId) async {
+  Future<void> removeUserFromHousehold(BuildContext context, int householdId,
+      int userId) async {
     try {
       await dio.patch('$baseUrl/households/$householdId/remove/user/$userId');
     } catch (e) {
@@ -210,8 +225,8 @@ class ApiProvider {
     }
   }
 
-  Future<void> updateHousehold(
-      BuildContext context, int householdId, String name) async {
+  Future<void> updateHousehold(BuildContext context, int householdId,
+      String name) async {
     try {
       await dio.patch('$baseUrl/households/$householdId', data: {
         'name': name,
@@ -233,11 +248,11 @@ class ApiProvider {
 
   // ----------------- Shopping Lists -----------------
 
-  Future<List<ShoppingList>> getLists(
-      BuildContext context, int householdId) async {
+  Future<List<ShoppingList>> getLists(BuildContext context,
+      int householdId) async {
     try {
       final response =
-          await dio.get('$baseUrl/households/$householdId/shoppinglists');
+      await dio.get('$baseUrl/households/$householdId/shoppinglists');
       return (response.data as List)
           .map((listJson) => ShoppingList.fromJson(listJson))
           .toList();
@@ -247,8 +262,8 @@ class ApiProvider {
     }
   }
 
-  Future<ShoppingList> getList(
-      BuildContext context, int householdId, int listId) async {
+  Future<ShoppingList> getList(BuildContext context, int householdId,
+      int listId) async {
     try {
       final response = await dio
           .get('$baseUrl/households/$householdId/shoppinglists/$listId');
@@ -259,14 +274,14 @@ class ApiProvider {
             id: 0,
             name: '',
             household:
-                Household(id: 0, name: '', ownerId: 0, isPrivate: false));
+            Household(id: 0, name: '', ownerId: 0, isPrivate: false));
       }
       throw Exception(AppLocalizations.of(context)!.error_get_list);
     }
   }
 
-  Future<void> createList(
-      BuildContext context, int householdId, String listName) async {
+  Future<void> createList(BuildContext context, int householdId,
+      String listName) async {
     try {
       await dio.post('$baseUrl/households/$householdId/shoppinglists', data: {
         'name': listName,
@@ -277,8 +292,8 @@ class ApiProvider {
     }
   }
 
-  Future<void> updateList(
-      BuildContext context, int householdId, int listId, String newName) async {
+  Future<void> updateList(BuildContext context, int householdId, int listId,
+      String newName) async {
     try {
       await dio.patch('$baseUrl/households/$householdId/shoppinglists/$listId',
           data: {
@@ -290,8 +305,8 @@ class ApiProvider {
     }
   }
 
-  Future<void> deleteList(
-      BuildContext context, int householdId, int listId) async {
+  Future<void> deleteList(BuildContext context, int householdId,
+      int listId) async {
     try {
       await dio
           .delete('$baseUrl/households/$householdId/shoppinglists/$listId');
@@ -317,8 +332,8 @@ class ApiProvider {
     }
   }
 
-  Future<List<Item>> getItems(
-      BuildContext context, int householdId, int listId) async {
+  Future<List<Item>> getItems(BuildContext context, int householdId,
+      int listId) async {
     try {
       final response = await dio
           .get('$baseUrl/households/$householdId/shoppinglists/$listId/items');
@@ -339,8 +354,7 @@ class ApiProvider {
           data: {
             'checked': checked,
           });
-      if (response.statusCode == 200) {
-      } else {
+      if (response.statusCode == 200) {} else {
         if (!context.mounted) return;
         throw Exception(AppLocalizations.of(context)!.error_update_item);
       }
@@ -364,8 +378,8 @@ class ApiProvider {
     }
   }
 
-  Future<void> deleteItem(
-      BuildContext context, int householdId, int listId, int itemId) async {
+  Future<void> deleteItem(BuildContext context, int householdId, int listId,
+      int itemId) async {
     try {
       await dio.delete(
           '$baseUrl/households/$householdId/shoppinglists/$listId/items/$itemId');
@@ -390,8 +404,8 @@ class ApiProvider {
     }
   }
 
-  Future<void> respondToInvitation(
-      BuildContext context, int invitationId, String status) async {
+  Future<void> respondToInvitation(BuildContext context, int invitationId,
+      String status) async {
     try {
       await dio.patch('$baseUrl/user/invitations/$invitationId', data: {
         'status': status,
@@ -417,8 +431,8 @@ class ApiProvider {
     }
   }
 
-  Future<void> respondToRequest(
-      BuildContext context, int requestId, String status) async {
+  Future<void> respondToRequest(BuildContext context, int requestId,
+      String status) async {
     try {
       await dio.post('$baseUrl/user/requests/$requestId', data: {
         'status': status,

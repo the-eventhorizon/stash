@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vana_sky_stash/providers/auth_provider.dart';
 import 'package:vana_sky_stash/screens/login_screen.dart';
 import 'package:vana_sky_stash/models/user.dart';
 import 'package:vana_sky_stash/providers/api_provider.dart';
@@ -30,6 +31,135 @@ class SettingScreen extends ConsumerWidget {
         ),
       );
     }
+  }
+
+  void changePassword(BuildContext context) async {
+    final trans = AppLocalizations.of(context)!;
+    final ApiProvider api = ApiProvider();
+
+    final formKey = GlobalKey<FormState>();
+    final currentPasswordController = TextEditingController();
+    final newPasswordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+    final userId = await AuthProvider().getCurrentUserId();
+
+    bool isPasswordVisible = false;
+    bool loading = false;
+    String? errorMessage;
+
+    if (!context.mounted) return;
+    final result = await showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => Dialog(
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  trans.auth_password_change,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 16.0),
+                Form(
+                  key: formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: currentPasswordController,
+                        decoration: InputDecoration(
+                          labelText: trans.auth_password_current,
+                        ),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return trans.auth_password_invalid;
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 10.0),
+                      TextFormField(
+                        controller: newPasswordController,
+                        decoration:
+                            InputDecoration(labelText: trans.auth_password_new),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.length < 8) {
+                            return trans.auth_password_too_short;
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 10.0),
+                      TextFormField(
+                        controller: confirmPasswordController,
+                        decoration: InputDecoration(
+                            labelText: trans.auth_password_confirmation),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null ||
+                              value != newPasswordController.text) {
+                            return trans.auth_password_no_match;
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16.0),
+                      if (loading)
+                        CircularProgressIndicator(
+                          color: Theme.of(context).primaryColor,
+                        )
+                      else
+                        ElevatedButton(
+                          onPressed: () async {
+                            if (formKey.currentState!.validate()) {
+                              setState(() {
+                                loading = true;
+                                errorMessage = null;
+                              });
+                            }
+                            try {
+                              await api.changePassword(
+                                  context,
+                                  currentPasswordController.text,
+                                  newPasswordController.text,
+                                  confirmPasswordController.text,
+                                  userId);
+                              if (!context.mounted) return;
+                              Navigator.pop(context, true);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(trans.auth_password_changed),
+                                ),
+                              );
+                            } catch (e) {
+                              setState(() {
+                                errorMessage = e.toString();
+                              });
+                            } finally {
+                              setState(() {
+                                loading = false;
+                              });
+                            }
+                          },
+                          child: Text(trans.auth_password_change),
+                        ),
+                      if (errorMessage != null)
+                        Padding(
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: Text(errorMessage!),
+                        ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   String getLanguageName(String languageCode, BuildContext context) {
@@ -170,7 +300,7 @@ class SettingScreen extends ConsumerWidget {
                         {
                           // Open browser to latest release
                           if (updateInfo.containsKey('url'))
-                            {launchUrl(updateInfo['url'])}
+                            {launchUrl(Uri.parse(updateInfo['url']))}
                         }
                     },
                   );
@@ -230,6 +360,11 @@ class SettingScreen extends ConsumerWidget {
                   return SizedBox.shrink();
                 }
               },
+            ),
+            ListTile(
+              leading: Icon(Icons.lock_reset),
+              title: Text(trans.auth_password_change),
+              onTap: () => changePassword(context),
             ),
             ListTile(
               leading: Icon(Icons.logout),
