@@ -3,13 +3,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shopping_list/l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vana_sky_stash/screens/login_screen.dart';
-import 'package:vana_sky_stash/models/user.dart';
-import 'package:vana_sky_stash/providers/api_provider.dart';
-import 'package:vana_sky_stash/providers/settings_notifier.dart';
+import 'package:shopping_list/screens/login_screen.dart';
+import 'package:shopping_list/models/user.dart';
+import 'package:shopping_list/providers/api_provider.dart';
+import 'package:shopping_list/providers/settings_notifier.dart';
 
 class SettingScreen extends ConsumerWidget {
   const SettingScreen({super.key});
@@ -113,7 +113,7 @@ class SettingScreen extends ConsumerWidget {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           )),
-                      value: settings.locale.languageCode,
+                      initialValue: settings.locale.languageCode,
                       onChanged: (value) async =>
                           await notifier.changeLanguage(value!),
                       items: AppLocalizations.supportedLocales.map((locale) {

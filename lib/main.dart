@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vana_sky_stash/providers/settings_notifier.dart';
-import 'package:vana_sky_stash/routes.dart';
-import 'package:vana_sky_stash/screens/login_screen.dart';
-import 'package:vana_sky_stash/screens/home_screen.dart';
-import 'package:vana_sky_stash/themes/dark.dart';
-import 'package:vana_sky_stash/themes/light.dart';
+import 'package:shopping_list/providers/settings_notifier.dart';
+import 'package:shopping_list/routes.dart';
+import 'package:shopping_list/screens/login_screen.dart';
+import 'package:shopping_list/screens/home_screen.dart';
+import 'package:shopping_list/themes/dark.dart';
+import 'package:shopping_list/themes/light.dart';
+
+import 'l10n/app_localizations.dart';
 
 void main() {
   runApp(ProviderScope(child: MyApp()));

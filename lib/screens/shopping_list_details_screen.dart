@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:vana_sky_stash/models/household.dart';
-import 'package:vana_sky_stash/models/item.dart';
-import 'package:vana_sky_stash/models/shopping_list.dart';
-import 'package:vana_sky_stash/providers/api_provider.dart';
+import 'package:shopping_list/l10n/app_localizations.dart';
+import 'package:shopping_list/models/household.dart';
+import 'package:shopping_list/models/item.dart';
+import 'package:shopping_list/models/shopping_list.dart';
+import 'package:shopping_list/providers/api_provider.dart';
 
 class ShoppingListDetailsScreen extends StatefulWidget {
   const ShoppingListDetailsScreen(

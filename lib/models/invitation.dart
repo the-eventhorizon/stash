@@ -1,5 +1,5 @@
-import 'package:vana_sky_stash/models/household.dart';
-import 'package:vana_sky_stash/models/user.dart';
+import 'package:shopping_list/models/household.dart';
+import 'package:shopping_list/models/user.dart';
 
 class Invitation {
   final int id;

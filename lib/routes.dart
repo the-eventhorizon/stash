@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:vana_sky_stash/models/household.dart';
-import 'package:vana_sky_stash/screens/household_details_screen.dart';
-import 'package:vana_sky_stash/screens/register_screen.dart';
-import 'package:vana_sky_stash/screens/login_screen.dart';
-import 'package:vana_sky_stash/screens/home_screen.dart';
-import 'package:vana_sky_stash/screens/create_household_screen.dart';
-import 'package:vana_sky_stash/screens/edit_household_screen.dart';
-import 'package:vana_sky_stash/screens/create_shopping_list_screen.dart';
-import 'package:vana_sky_stash/screens/setting_screen.dart';
-import 'package:vana_sky_stash/screens/shopping_list_details_screen.dart';
-import 'package:vana_sky_stash/screens/user_screen.dart';
-import 'package:vana_sky_stash/screens/pending_invitations_screen.dart';
-import 'package:vana_sky_stash/screens/pending_requests_screen.dart';
+import 'package:shopping_list/models/household.dart';
+import 'package:shopping_list/screens/household_details_screen.dart';
+import 'package:shopping_list/screens/register_screen.dart';
+import 'package:shopping_list/screens/login_screen.dart';
+import 'package:shopping_list/screens/home_screen.dart';
+import 'package:shopping_list/screens/create_household_screen.dart';
+import 'package:shopping_list/screens/edit_household_screen.dart';
+import 'package:shopping_list/screens/create_shopping_list_screen.dart';
+import 'package:shopping_list/screens/setting_screen.dart';
+import 'package:shopping_list/screens/shopping_list_details_screen.dart';
+import 'package:shopping_list/screens/user_screen.dart';
+import 'package:shopping_list/screens/pending_invitations_screen.dart';
+import 'package:shopping_list/screens/pending_requests_screen.dart';
 
 Map<String, WidgetBuilder> getRoutes() {
   return {

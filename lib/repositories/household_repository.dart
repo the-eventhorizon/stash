@@ -1,4 +1,4 @@
-import 'package:vana_sky_stash/providers/db_provider.dart';
+import 'package:shopping_list/providers/db_provider.dart';
 
 class HouseholdRepository {
   final DBProvider dbProvider = DBProvider();

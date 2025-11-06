@@ -1,4 +1,4 @@
-name: vana_sky_stash
+name: shopping_list
 description: "A simple shopping list app"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 

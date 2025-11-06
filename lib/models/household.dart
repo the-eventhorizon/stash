@@ -1,4 +1,4 @@
-import 'package:vana_sky_stash/models/user.dart';
+import 'package:shopping_list/models/user.dart';
 
 class Household {
   final int id;
